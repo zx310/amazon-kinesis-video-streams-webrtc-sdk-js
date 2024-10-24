@@ -447,16 +447,20 @@ async function printPeerConnectionStateInfo(event, logPrefix, remoteClientId) {
 
         const logSelectedCandidate = async () => {
             try {
-                const stats = await iceTransport.getStats();
-                let candidatePairFound = false;
-                stats.forEach(stat => {
-                    if (stat.type === "candidate-pair" && stat.state === "succeeded") {
-                        console.debug(`Chosen candidate pair (${trackType || 'unknown'}):`, stat);
-                        candidatePairFound = true;
+                if (iceTransport.getSelectedCandidatePair) {
+                    const stats = await iceTransport.getStats();
+                    let candidatePairFound = false;
+                    stats.forEach(stat => {
+                        if (stat.type === "candidate-pair" && stat.state === "succeeded") {
+                            console.debug(`Chosen candidate pair (${trackType || 'unknown'}):`, stat);
+                            candidatePairFound = true;
+                        }
+                    });
+                    if (!candidatePairFound) {
+                        console.debug('No valid candidate pair found yet.');
                     }
-                });
-                if (!candidatePairFound) {
-                    console.debug('No valid candidate pair found yet.');
+                } else {
+                    console.warn('getSelectedCandidatePair not supported on this platform.');
                 }
             } catch (error) {
                 console.error(`Error fetching selected candidate pair for track ${trackType}:`, error);
