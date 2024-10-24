@@ -442,35 +442,37 @@ async function printPeerConnectionStateInfo(event, logPrefix, remoteClientId) {
 
         rtcPeerConnection.getSenders().map(sender => {
     const trackType = sender.track?.kind;
-    if (sender.transport) {
+    if (sender.transport && sender.transport.iceTransport) {
         const iceTransport = sender.transport.iceTransport;
-        if (iceTransport) {
-            const logSelectedCandidate = async () => {
-                try {
-                    const stats = await iceTransport.getStats();
-                    let candidatePairFound = false;
-                    stats.forEach(stat => {
-                        if (stat.type === "candidate-pair" && stat.state === "succeeded") {
-                            console.debug(`Chosen candidate pair (${trackType || 'unknown'}):`, stat);
-                            candidatePairFound = true;
-                        }
-                    });
-                    if (!candidatePairFound) {
-                        console.error('No valid candidate pair found yet.');
+
+        const logSelectedCandidate = async () => {
+            try {
+                const stats = await iceTransport.getStats();
+                let candidatePairFound = false;
+                stats.forEach(stat => {
+                    if (stat.type === "candidate-pair" && stat.state === "succeeded") {
+                        console.debug(`Chosen candidate pair (${trackType || 'unknown'}):`, stat);
+                        candidatePairFound = true;
                     }
-                } catch (error) {
-                    console.error("Error fetching selected candidate pair:", error);
+                });
+                if (!candidatePairFound) {
+                    console.debug('No valid candidate pair found yet.');
                 }
-            };
-            iceTransport.onselectedcandidatepairchange = logSelectedCandidate;
-            logSelectedCandidate();
-        } else {
-            console.error('ICE transport not available yet.');
-        }
+            } catch (error) {
+                console.error(`Error fetching selected candidate pair for track ${trackType}:`, error);
+            }
+        };
+
+        iceTransport.onselectedcandidatepairchange = logSelectedCandidate;
+        logSelectedCandidate();
     } else {
-        console.error('Failed to fetch the candidate pair! Sender transport is undefined.');
+        console.debug(`Skipping candidate pair logging for ${trackType || 'unknown'}: iceTransport not available.`);
     }
+
+    // 确认代码继续执行的调试信息
+    console.debug(`Continuing execution for track: ${trackType || 'unknown'}`);
 });
+
 
     } else if (rtcPeerConnection.connectionState === 'failed') {
         if (remoteClientId) {
