@@ -758,9 +758,9 @@ async function startViewer(localView, remoteView, formValues, onStatsReport, rem
             }
         });
 
-        viewer.peerConnection.addEventListener('connectionstatechange', async event => {
-            printPeerConnectionStateInfo(event, '[VIEWER]');
-        });
+        //viewer.peerConnection.addEventListener('connectionstatechange', async event => {
+            //printPeerConnectionStateInfo(event, '[VIEWER]');
+        //});
 
         // As remote tracks are received, add them to the remote view
         viewer.peerConnection.addEventListener('track', event => {
