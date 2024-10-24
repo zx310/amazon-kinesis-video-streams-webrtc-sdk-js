@@ -441,19 +441,29 @@ async function printPeerConnectionStateInfo(event, logPrefix, remoteClientId) {
         if (!stats) return;
 
         rtcPeerConnection.getSenders().map(sender => {
-            const trackType = sender.track?.kind;
-            if (sender.transport) {
-                const iceTransport = sender.transport.iceTransport;
-                if (iceTransport) {
-                    const logSelectedCandidate = () =>
-                        console.debug(`Chosen candidate pair (${trackType || 'unknown'}):`, iceTransport.getSelectedCandidatePair());
-                    iceTransport.onselectedcandidatepairchange = logSelectedCandidate;
-                    logSelectedCandidate();
-                }
-            } else {
-                console.error('Failed to fetch the candidate pair!');
+        const trackType = sender.track?.kind;
+        if (sender.transport) {
+            const iceTransport = sender.transport.iceTransport;
+            if (iceTransport) {
+                const logSelectedCandidate = async () => {
+                    try {
+                        const stats = await iceTransport.getStats();
+                        stats.forEach(stat => {
+                            if (stat.type === "candidate-pair" && stat.state === "succeeded") {
+                                console.debug(`Chosen candidate pair (${trackType || 'unknown'}):`, stat);
+                            }
+                        });
+                    } catch (error) {
+                        console.error("Error fetching selected candidate pair:", error);
+                    }
+                };
+                iceTransport.onselectedcandidatepairchange = logSelectedCandidate;
+                logSelectedCandidate();
             }
-        });
+        } else {
+            console.error('Failed to fetch the candidate pair!');
+        }
+    });
     } else if (rtcPeerConnection.connectionState === 'failed') {
         if (remoteClientId) {
             removeViewerTrackFromMaster(remoteClientId);
