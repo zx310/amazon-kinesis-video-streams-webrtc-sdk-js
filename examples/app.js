@@ -432,50 +432,7 @@ function removeViewerTrackFromMaster(viewerId) {
     }
 }
 
-async function printPeerConnectionStateInfo(event, logPrefix, remoteClientId) {
-    const rtcPeerConnection = event.target;
-    console.debug(logPrefix, 'PeerConnection state:', rtcPeerConnection.connectionState);
-    if (rtcPeerConnection.connectionState === 'connected') {
-        console.log(logPrefix, 'Connection to peer successful!');
-        const stats = await rtcPeerConnection.getStats();
-        if (!stats) return;
 
-        rtcPeerConnection.getSenders().map(sender => {
-    const trackType = sender.track?.kind;
-    if (sender.transport && sender.transport.iceTransport) {
-        const iceTransport = sender.transport.iceTransport;
-
-        const logSelectedCandidate = async () => {
-            try {
-                if (iceTransport.getSelectedCandidatePair) {
-                    const stats = await iceTransport.getStats();
-                    let candidatePairFound = false;
-                    stats.forEach(stat => {
-                        if (stat.type === "candidate-pair" && stat.state === "succeeded") {
-                            console.debug(`Chosen candidate pair (${trackType || 'unknown'}):`, stat);
-                            candidatePairFound = true;
-                        }
-                    });
-                    if (!candidatePairFound) {
-                        console.debug('No valid candidate pair found yet.');
-                    }
-                } else {
-                    console.warn('getSelectedCandidatePair not supported on this platform.');
-                }
-            } catch (error) {
-                console.error(`Error fetching selected candidate pair for track ${trackType}:`, error);
-            }
-        };
-
-        iceTransport.onselectedcandidatepairchange = logSelectedCandidate;
-        logSelectedCandidate();
-    } else {
-        console.debug(`Skipping candidate pair logging for ${trackType || 'unknown'}: iceTransport not available.`);
-    }
-
-    // 确认代码继续执行的调试信息
-    console.debug(`Continuing execution for track: ${trackType || 'unknown'}`);
-});
 
 
     } else if (rtcPeerConnection.connectionState === 'failed') {
