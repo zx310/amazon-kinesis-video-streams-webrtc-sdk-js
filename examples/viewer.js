@@ -538,12 +538,12 @@ async function startViewer(localView, remoteView, formValues, onStatsReport, rem
               }
             : { width: { ideal: 640 }, height: { ideal: 480 } };
         const constraints = {
-            video: false,
-            audio: false,
+            video: formValues.sendVideo ? resolution : false,
+            audio: formValues.sendAudio,
         };
         const configuration = {
             iceServers,
-            iceTransportPolicy: 'all',
+            iceTransportPolicy: formValues.forceTURN ? 'relay' : 'all',
         };
         viewer.peerConnection = new RTCPeerConnection(configuration);
 
