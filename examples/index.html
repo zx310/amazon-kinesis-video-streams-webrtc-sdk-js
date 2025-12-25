@@ -23,22 +23,22 @@
     <p>This is the KVS Signaling Channel WebRTC test page. Use this page to connect to a signaling channel as either the MASTER or as a VIEWER.</p>
 
     <div class="row loader"></div>
-    <div id="main" class="d-none">
-        <form id="form" onsubmit="return false">
+<div id="main" class="">
+        <form id="form" onsubmit="return false" class="">
             <div class="form-group has-validation" style="position: relative;">
                 <label for="region">Region</label>
-                <input type="text" class="form-control valid" id="region" placeholder="Region" value="us-west-2" autocomplete="off" required>
-                <datalist id="regionList"></datalist>
+                <input type="text" class="form-control valid" id="region" placeholder="Region" value="us-west-2" autocomplete="off" required="" list="regionList">
+                <datalist id="regionList"><option value="af-south-1">af-south-1</option><option value="ap-east-1">ap-east-1</option><option value="ap-northeast-1">ap-northeast-1</option><option value="ap-northeast-2">ap-northeast-2</option><option value="ap-south-1">ap-south-1</option><option value="ap-southeast-1">ap-southeast-1</option><option value="ap-southeast-2">ap-southeast-2</option><option value="ap-southeast-5">ap-southeast-5</option><option value="ca-central-1">ca-central-1</option><option value="eu-central-1">eu-central-1</option><option value="eu-south-2">eu-south-2</option><option value="eu-west-1">eu-west-1</option><option value="eu-west-2">eu-west-2</option><option value="eu-west-3">eu-west-3</option><option value="me-south-1">me-south-1</option><option value="sa-east-1">sa-east-1</option><option value="us-east-1">us-east-1</option><option value="us-east-2">us-east-2</option><option value="us-gov-east-1">us-gov-east-1</option><option value="us-gov-west-1">us-gov-west-1</option><option value="us-west-2">us-west-2</option></datalist>
                 <div id="region-invalid-feedback" class="invalid-feedback"></div>
             </div>
             <h4 id="subheader">AWS Credentials</h4>
             <div class="form-group">
                 <label for="accessKeyId">Access Key ID</label>
-                <input type="text" class="form-control" id="accessKeyId" placeholder="Access key id" required>
+                <input type="text" class="form-control" id="accessKeyId" placeholder="Access key id" required="">
             </div>
             <div class="form-group">
                 <label for="secretAccessKey">Secret Access Key</label>
-                <input type="password" class="form-control" id="secretAccessKey" placeholder="Secret access key" required>
+                <input type="password" class="form-control" id="secretAccessKey" placeholder="Secret access key" required="">
             </div>
             <div class="form-group">
                 <label for="sessionToken">Session Token <small>(optional)</small></label>
@@ -48,334 +48,33 @@
             <div>
                 <label for="channelName">Channel Name</label>
                 <div class="form-group input-group">
-                    <input type="text" class="form-control" id="channelName" placeholder="Channel" required>
+                    <input type="text" class="form-control" id="channelName" placeholder="Channel" required="">
                     <div class="input-group-append">
                         <button id="create-channel-button" type="submit" class="btn btn-primary" title="Create a signaling channel with this name.">Create Channel</button>
                     </div>
                 </div>
             </div>
-            <div class="form-group">
-                <label for="clientId">Client Id <small>(optional)</small></label>
-                <span data-delay="{ &quot;hide&quot;: 1500 }" data-position="auto" tabindex="0" class="text-info" data-toggle="tooltip" data-html="true" title="
-                    <p>Only used in <code>viewer</code> mode. A unique identifier for the client. If left empty, a random client id will be generated.</p>
-                    <a href=&quot;https://docs.aws.amazon.com/kinesisvideostreams-webrtc-dg/latest/devguide/kvswebrtc-websocket-apis-1.html&quot;>Additional information</a>
-                    "><sup>&#9432;</sup></span>
-                <input type="text" class="form-control" id="clientId" placeholder="Client id">
-            </div>
-            <h4 id="subheader">Tracks</h4>
-            <p><small>Control which media types are transmitted to the remote client. For WebRTC Ingestion and Storage master, both audio and video must be sent, and viewers cannot not send video and optional audio.</small></p>
-            <div class="form-group">
-                <div class="form-check-inline">
-                    <input class="form-check-input" type="checkbox" id="sendVideo" value="video" checked>
-                    <label for="sendVideo" class="form-check-label">Send Video</label>
-                </div>
-                <div class="form-check-inline">
-                    <input class="form-check-input" type="checkbox" id="sendAudio" value="audio">
-                    <label for="sendAudio" class="form-check-label">Send Audio</label>
-                </div>
-                <div class="form-check-inline">
-                    <input class="form-check-input" type="checkbox" id="openDataChannel" value="datachannel">
-                    <label for="openDataChannel" class="form-check-label">Open DataChannel</label>
-                    <span data-delay="{ &quot;hide&quot;: 1500 }" data-position="auto" tabindex="0" class="text-info ml-1" data-toggle="tooltip" data-html="true" title="
-                    <p>Open a channel which can be used for bidirectional peer-to-peer transfers of data, hence the name.</p>
-                    <a href=&quot;https://www.w3.org/TR/webrtc/#rtcdatachannel&quot;>Additional information</a>
-                    "><sup>&#9432;</sup></span>
-                </div>
-            </div>
-            <details id="webrtc-ingestion-and-storage-group"><summary class="h4" id="subheader">WebRTC Ingestion and Storage</summary>
-            <div>
-                <p><small>Configure which stream to ingest and store media to. Call update media storage configuration with an empty Stream name to disable this feature.</small></p>
-                <div class="form-group input-group">
-                    <input type="text" class="form-control" id="streamName" placeholder="Stream name">
-                    <div class="input-group-append">
-                        <button id="create-stream-button" type="submit" class="btn btn-primary ml-1 mr-1" title="Create a Kinesis Video Stream with this name." data-toggle="modal" data-target="#create-stream-modal">Create Stream</button>
-                    </div>
-                    <div class="input-group-append">
-                        <button id="update-media-storage-configuration-button" type="submit" class="btn btn-primary" title="Ingest and Store media to a specific Kinesis Video Stream.">Update Media Storage Configuration</button>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <button id="describe-media-storage-configuration-button" class="btn btn-primary">Describe Media Storage Configuration</button>
-                </div>
-                <div class="form-group">
-                    <button id="listStorageChannels" class="btn btn-primary">List All Media Storage Channels</button>
-                    <p><small>List storage channels outputs the ARNs of all signaling channels configured for storage and their associated stream's ARN.</small></p>
-                </div>
-                <div class="form-group form-check-inline">
-                    <input class="form-check-input" type="checkbox" id="ingest-media">
-                    <label for="ingest-media" class="form-check-label">Automatically determine ingestion mode</label>
-                    <span data-delay="{ &quot;hide&quot;: 1500 }" data-position="auto" tabindex="0" class="text-info ml-1" data-toggle="tooltip" data-html="true" title="
-                    <p>If WebRTC Ingestion and Storage is configured, after connecting to Kinesis Video Signaling, this sample application will invoke the JoinStorageSession API to have the Kinesis video producing device join the WebRTC session as a viewer.</p>
-                    <a href=&quot;https://docs.aws.amazon.com/kinesisvideostreams/latest/dg/API_webrtc_JoinStorageSession.html&quot;>Additional information</a>
-                    "><sup>&#9432;</sup></span>
-                </div>
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
 
-                <div id="manual-ingestion-mode-button-override" class="form-group form-check-inline">
-                    <label for="show-join-storage-session-button" class="form-check-label mr-2">Manual override:</label>
-                    <div id="manual-join-button-group" class="btn-group" role="group" aria-label="ingestion manual mode">
-                        <button id="ingest-media-manual-on" class="btn btn-secondary">ON</button>
-                        <button id="ingest-media-manual-off" class="btn btn-primary" data-selected="true">OFF</button>
-                    </div>
-                </div>
-                <br />
-                <div id="show-join-storage-session-manually">
-                    <div class="form-group form-check-inline">
-                        <input class="form-check-input" type="checkbox" id="show-join-storage-session-button">
-                        <label for="show-join-storage-session-button" class="form-check-label">Show button to manually call JoinStorageSession API.</label>
-                        <span data-delay="{ &quot;hide&quot;: 1500 }" data-position="auto" tabindex="0" class="text-info ml-1" data-toggle="tooltip" data-html="true" title="
-                    <p>If enabled, this application won't automatically invoke this API after connecting to Signaling. You will need to invoke this API manually.</p>
-                    "><sup>&#9432;</sup></span>
-                    </div>
-                    <div class="form-group form-check-inline">
-                        <input class="form-check-input" type="checkbox" id="show-join-storage-session-as-viewer-button">
-                        <label for="show-join-storage-session-as-viewer-button" class="form-check-label">Show button to manually call JoinStorageSessionAsViewer API.</label>
-                        <span data-delay="{ &quot;hide&quot;: 1500 }" data-position="auto" tabindex="0" class="text-info ml-1" data-toggle="tooltip" data-html="true" title="
-                    <p>If enabled, this application won't automatically invoke this API after connecting to Signaling. You will need to invoke this API manually.</p>
-                    "><sup>&#9432;</sup></span>
-                    </div>
-                </div>
-            </div>
-            </details>
-            <h4 id="subheader">Video Resolution</h4>
-            <p><small>Set the desired video resolution and aspect ratio.</small></p>
-            <div class="form-group">
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="resolution" id="widescreen" value="option1" checked>
-                    <label class="form-check-label" for="widescreen">1280x720 <small>(16:9 widescreen)</small></label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="resolution" id="fullscreen" value="option2">
-                    <label class="form-check-label" for="fullscreen">640x480 <small>(4:3 fullscreen)</small></label>
-                </div>
-            </div>
-            <h4 id="subheader">NAT Traversal</h4>
-            <p><small>Control settings for ICE candidate generation.</small>
-            <span data-delay="{ &quot;hide&quot;: 1500 }" data-position="auto" tabindex="0" class="text-info" data-toggle="tooltip" data-html="true" title="
-                    <p>Determines the types of <code>ICE candidates</code> that are generated.<br/><br/>STUN/TURN = host, server reflexive, and relay<br/>STUN only = server reflexive<br/>TURN only = relay<br/>Disabled = host</p>
-                    <a href=&quot;https://docs.aws.amazon.com/kinesisvideostreams-webrtc-dg/latest/devguide/kvswebrtc-how-it-works.html#how-kvswebrtc-works&quot;>Additional information</a>
-                "><sup>&#9432;</sup></span></p>
-            <div class="form-group">
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="natTraversal" id="natTraversalEnabled" value="option2" checked>
-                    <label class="form-check-label" for="natTraversalEnabled">STUN/TURN</label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="natTraversal" id="forceTURN" value="option3">
-                    <label class="form-check-label" for="forceTURN">TURN Only <small>(force cloud relay)</small></label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="natTraversal" id="forceSTUN" value="option4">
-                    <label class="form-check-label" for="forceSTUN">STUN Only</label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="natTraversal" id="natTraversalDisabled" value="option1">
-                    <label class="form-check-label" for="natTraversalDisabled">Disabled</label>
-                </div>
-            </div>
-            <div class="form-group">
-                <div class="form-check-inline">
-                    <input class="form-check-input" type="checkbox" id="useTrickleICE" value="useTrickleICE" checked>
-                    <label for="useTrickleICE" class="form-check-label">Use trickle ICE</label>
-                    <span data-delay="{ &quot;hide&quot;: 1500 }" data-position="auto" tabindex="0" class="text-info ml-1" data-toggle="tooltip" data-html="true" title="
-                    <p>ICE candidates are exchanged incrementally as soon as they become available (and simultaneously with the gathering of other candidates). Supported by browsers, but not by Alexa devices.</p>
-                    <a href=&quot;https://datatracker.ietf.org/doc/html/rfc8829#sec.ice-candidate-trickling&quot;>Additional information</a>
-                "><sup>&#9432;</sup></span>
-                </div>
-            </div>
-            <h4 id="subheader">Amazon KVS WebRTC DQP</h4>
-            <div class="form-group">
-                <div class="form-check-inline">
-                    <input class="form-check-input" type="checkbox" id="enableDQPmetrics" value="enableDQPmetrics">
-                    <label for="enableDQPmetrics" class="form-check-label">Enable KVS WebRTC DQP Test and Metrics <small>(Viewer only)</small></label>
-                    <span data-delay="{ &quot;hide&quot;: 1500 }" data-position="auto" tabindex="0" class="text-info ml-1" data-toggle="tooltip" data-html="true" title="
-                    <p>Enables the test and metrics for the Amazon KVS WebRTC Device Qualification Program.</p>
-                    <a href=&quot;https://aws.amazon.com/partners/programs/dqp/&quot;>Additional information</a>
-                "><sup>&#9432;</sup></span>
-                </div>
-            </div>
+            
+            
 
-            <h4 id="subheader">Amazon KVS WebRTC Profiling Timeline chart</h4>
-            <div class="form-group">
-                <div class="form-check-inline">
-                    <input class="form-check-input" type="checkbox" id="enableProfileTimeline" value="enableProfileTimeline">
-                    <label for="enableProfileTimeline" class="form-check-label">Enable C SDK master and JS viewer profile timeline<small>(Master + Viewer)</small></label>
-                    <span data-delay="{ &quot;hide&quot;: 1500 }" data-position="auto" tabindex="0" class="text-info ml-1" data-toggle="tooltip" data-html="true" title="
-                    <p>Enables the test and metrics for the Amazon KVS WebRTC by sending the master-side metrics to the viewer via datachannel and display a timeline chart.</p>
-                    <a href=&quot;https://github.com/awslabs/amazon-kinesis-video-streams-webrtc-sdk-js/tree/develop?tab=readme-ov-file#metrics&quot;>Additional information</a>
-                "><sup>&#9432;</sup></span>
-                </div>
-            </div>
+            
 
-            <details><summary class="h4" id="subheader">Advanced</summary>
-                <p class="mt-3"><small>Filter settings for which ICE candidates are sent to and received from the peer.</small></p>
-                <div class="container">
-                    <div class="row">
-                        <div class="col-sm">
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="send-relay" checked />
-                                <label for="send-relay" class="form-check-label">Send <code>relay</code> candidates to peer</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="accept-relay" checked />
-                                <label for="accept-relay" class="form-check-label">Accept <code>relay</code> candidates from peer</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="send-srflx" checked />
-                                <label for="send-srflx" class="form-check-label">Send <code>srflx</code> candidates to peer</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="accept-srflx" checked />
-                                <label for="accept-srflx" class="form-check-label">Accept <code>srflx</code> candidates from peer</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="send-host" checked />
-                                <label for="send-host" class="form-check-label">Send <code>host</code> candidates to peer</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="accept-host" checked />
-                                <label for="accept-host" class="form-check-label">Accept <code>host</code> candidates from peer</label>
-                            </div>
-                        </div>
-                        <div class="col-sm">
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="send-prflx" checked />
-                                <label for="send-prflx" class="form-check-label">Send <code>prflx</code> candidates to peer</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="accept-prflx" checked />
-                                <label for="accept-prflx" class="form-check-label">Accept <code>prflx</code> candidates from peer</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="send-tcp" checked />
-                                <label for="send-tcp" class="form-check-label">Send <code>tcp</code> candidates to peer</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="accept-tcp" checked />
-                                <label for="accept-tcp" class="form-check-label">Accept <code>tcp</code> candidates from peer</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="send-udp" checked />
-                                <label for="send-udp" class="form-check-label">Send <code>udp</code> candidates to peer</label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="accept-udp" checked />
-                                <label for="accept-udp" class="form-check-label">Accept <code>udp</code> candidates from peer</label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <p class="mt-3"><small>Signaling reconnect</small></p>
-                <div class="container">
-                    <div class="row">
-                        <div class="col-sm">
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="signaling-reconnect" checked/>
-                                <label for="signaling-reconnect" class="form-check-label">Reopen signaling connection
-                                    after idle timeout <small>(Master only, non WebRTC ingestion)</small></label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <p class="mt-3"><small>Logging</small></p>
-                <div class="container">
-                    <div class="row">
-                        <div class="col-sm">
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="log-aws-sdk-calls" onclick="configureAwsSdkLogs()"/>
-                                <label for="log-aws-sdk-calls" class="form-check-label">Log AWS SDK for JavaScript calls</label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <p class="mt-3"><small>Filter received media types</small><span data-delay="{ &quot;hide&quot;: 1500 }" data-position="auto" tabindex="0" class="text-info ml-1" data-toggle="tooltip" data-html="true" title="
-                                <p>Advertise support for a subset of media codecs, reducing the size of the SDP messages.</p>"><sup>&#9432;</sup></span></p>
-                <div class="mt-3 container">
-                    <div class="d-flex align-items-center mb-3">
-                        <div class="form-check form-switch">
-                            <input class="form-check-input" type="checkbox" id="codec-filter-toggle" checked>
-                            <label class="form-check-label" for="codec-filter-toggle"><strong>Enable codec filter</strong></label>
-                        </div>
-                    </div>
-
-                    <div id="codecOptions" class="row">
-                        <div class="col">
-                            <button type="button"
-                                    id="reset-codecs"
-                                    class="btn btn-primary mt-2"
-                                    onclick="resetCodecPreferences()">
-                                Reset to Default Codecs
-                            </button>
-                        </div>
-                        <div class="col-sm">
-                            <h6>Video Codecs Allowed</h6>
-                            <div id="videoCodecs"></div>
-                        </div>
-                        <div class="col-sm">
-                            <h6>Audio Codecs Allowed</h6>
-                            <div id="audioCodecs"></div>
-                        </div>
-                    </div>
-                </div>
-
-                <p class="mt-3"><small>TURN connection options</small><span data-delay="{ &quot;hide&quot;: 1500 }" data-position="auto" tabindex="0" class="text-info ml-1" data-toggle="tooltip" data-html="true" title="
-                                <p>Filter options for the URLs from the GetIceServerConfig API call.</p>"><sup>&#9432;</sup></span></p>
-                <div class="mt-3 mb-3 container">
-                    <div class="form-check form-switch">
-                        <input class="form-check-input" type="checkbox" id="turn-with-udp" checked>
-                        <label class="form-check-label" for="turn-with-udp">TURN with UDP</label>
-                    </div>
-                    <div class="form-check form-switch">
-                        <input class="form-check-input" type="checkbox" id="turns-with-udp" checked>
-                        <label class="form-check-label" for="turns-with-udp">TURNS with UDP</label>
-                    </div>
-                    <div class="form-check form-switch">
-                        <input class="form-check-input" type="checkbox" id="turns-with-tcp" checked>
-                        <label class="form-check-label" for="turns-with-tcp">TURNS with TCP</label>
-                    </div>
-                    <div class="form-check form-switch">
-                        <input class="form-check-input" type="checkbox" id="turn-one-set-only" checked>
-                        <label class="form-check-label" for="turn-one-set-only">Use only one set of TURN servers<span data-delay="{ &quot;hide&quot;: 1500 }" data-position="auto" tabindex="0" class="text-info ml-1" data-toggle="tooltip" data-html="true" title="
-                            <p>GetIceServerConfig returns two sets of TURN servers, only use one of the sets.</p>"><sup>&#9432;</sup></span></label>
-                    </div>
-                </div>
-
-                <div class="d-flex align-items-center mt-3">
-                    <p class="mb-0">
-                        <small>KVS Endpoint Type</small>
-                    </p>
-
-                    <!-- Tooltip icon -->
-                    <span data-delay="{ &quot;hide&quot;: 1500 }"
-                        data-position="auto"
-                        tabindex="0"
-                        class="text-info ml-1"
-                        data-toggle="tooltip"
-                        data-html="true"
-                        title="<p>Use dual-stack KVS endpoints, else will use legacy IPv4-only endpoints. Dual-stack mode will also allow for IPv6 ICE candidates if supported by the browser and local network.</p>
-                        <a href=&quot;https://docs.aws.amazon.com/sdkref/latest/guide/feature-endpoints.html&quot;>Additional information</a>">
-                        <sup>&#9432;</sup>
-                    </span>
-                </div>
-
-                <div class="form-group">
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="endpoint-type" id="legacy" value="option1" checked>
-                        <label class="form-check-label" for="legacy">Legacy <small>"amazonaws.com"</small></label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="endpoint-type" id="dual-stack" value="option2">
-                        <label class="form-check-label" for="dual-stack">Dual-stack <small>"api.aws"</small></label>
-                    </div>
-                </div>
-                                    
-                <p class="mt-3"><small>Endpoint Override</small></p>
-                <div class="form-group">
-                    <input type="text" class="form-control" id="endpoint" placeholder="Endpoint">
-                </div>
-
-            </details>
-
-            <hr>
+            
             <div style="margin-top: 30px;">
                 <button id="master-button" type="submit" class="btn btn-primary">Start Master</button>
                 <button id="viewer-button" type="submit" class="btn btn-primary">Start Viewer</button>
@@ -388,7 +87,7 @@
                     <div class="modal-header">
                         <h5 class="modal-title" id="create-stream-modal-label">Create a Kinesis Video Stream</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
+                            <span aria-hidden="true">×</span>
                         </button>
                     </div>
                     <div class="modal-body">
@@ -399,7 +98,7 @@
                             </div>
                             <div class="form-group">
                                 <label for="create-stream-modal-retention-input" class="col-form-label">Data retention (hours):</label>
-                                <input class="form-control" id="create-stream-modal-retention-input" type="number" value="48"/>
+                                <input class="form-control" id="create-stream-modal-retention-input" type="number" value="48">
                             </div>
                         </form>
                     </div>
@@ -416,14 +115,14 @@
             <div class="row">
                 <div class="col">
                     <h5 id="master-section-heading">Master Section</h5>
-                    <div class="video-container"><video class="local-view" autoplay playsinline controls muted></video></div>
+                    <div class="video-container"><video class="local-view" autoplay="" playsinline="" controls="" muted=""></video></div>
                 </div>
                 <div id="viewer-view-holder" class="col remote">
                     <h5 id="master-viewer-heading">Viewer Return Channel</h5>
-                    <div id="empty-video-placeholder" class="video-container"><video class="remote-view" autoplay playsinline controls></video></div>
+                    <div id="empty-video-placeholder" class="video-container"><video class="remote-view" autoplay="" playsinline="" controls=""></video></div>
                 </div>
             </div>
-            <div class="row datachannel">
+            <div class="row datachannel d-none">
                 <div class="col">
                     <div class="form-group">
                       <textarea id="master-data-channel-input" type="text" class="form-control local-message" placeholder="DataChannel message to send to all viewers"> </textarea>
@@ -436,7 +135,7 @@
                 </div>
             </div>
             <div>
-                <span class="send-message datachannel">
+                <span class="send-message datachannel d-none">
                   <button id="send-message" type="button" class="btn btn-primary">Send DataChannel Message</button>
                 </span>
                 <button id="stop-master-button" type="button" class="btn btn-danger">Stop Master</button>
@@ -450,14 +149,14 @@
             <div class="row">
                 <div class="col">
                     <h5>Return Channel</h5>
-                    <div class="video-container"><video class="local-view" autoplay playsinline controls muted></video></div>
+                    <div class="video-container"><video class="local-view" autoplay="" playsinline="" controls="" muted=""></video></div>
                 </div>
                 <div class="col">
                     <h5>From Master</h5>
-                    <div class="video-container"><video class="remote-view" autoplay playsinline controls></video></div>
+                    <div class="video-container"><video class="remote-view" autoplay="" playsinline="" controls=""></video></div>
                 </div>
             </div>
-            <div class="row datachannel">
+            <div class="row datachannel d-none">
                 <div class="col">
                     <div class="form-group">
                       <textarea type="text" class="form-control local-message" placeholder="DataChannel message to send to MASTER"> </textarea>
@@ -488,7 +187,7 @@
                     </div>
                     <div class="col">
                         <div class="card bg-light mb-3">
-                            <canvas id="metricsChart" style="width:100%"; height="400px"></canvas>
+                            <canvas id="metricsChart" style="width:100%" ;="" height="400px"></canvas>
                         </div>
                     </div>
                 </div>
@@ -512,10 +211,10 @@
         <div class="card bg-light mb-3">
             <div style="display: flex; justify-content: space-between;">
                 <div id="tabs">
-                    <button id="debug-button" class="btn btn-light" onClick="logLevelSelected(event)" data-level="DEBUG">DEBUG</button>
-                    <button id="info-button" class="btn btn-primary" onClick="logLevelSelected(event)" data-level="INFO">INFO</button>
-                    <button id="warn-button" class="btn btn-light" onClick="logLevelSelected(event)" data-level="WARN">WARN</button>
-                    <button id="error-button" class="btn btn-light" onClick="logLevelSelected(event)" data-level="ERROR">ERROR</button>
+                    <button id="debug-button" class="btn btn-light" onclick="logLevelSelected(event)" data-level="DEBUG">DEBUG</button>
+                    <button id="info-button" class="btn btn-primary" onclick="logLevelSelected(event)" data-level="INFO">INFO</button>
+                    <button id="warn-button" class="btn btn-light" onclick="logLevelSelected(event)" data-level="WARN">WARN</button>
+                    <button id="error-button" class="btn btn-light" onclick="logLevelSelected(event)" data-level="ERROR">ERROR</button>
                 </div>
                 <div class="d-inline-flex">
                     <button id="more-logs" class="btn btn-light" title="Show more logs">+</button>
@@ -523,12 +222,304 @@
                     <button id="clear-logs" class="btn btn-light">Clear Logs</button>
                     <div>
                         <button id="copy-logs" class="btn btn-light" title="Copy logs">
-                            <span id="copy-tooltip" aria-live="assertive" class="text-info" role="tooltip" data-position="auto" title="Copied logs to clipboard!">📋</span>
+                            <span id="copy-tooltip" aria-live="assertive" class="text-info" role="tooltip" data-position="auto" title="" data-original-title="Copied logs to clipboard!">📋</span>
                         </button>
                     </div>
                 </div>
             </div>
-            <pre id="logs" class="card-body text-monospace preserve-whitespace"></pre>
+            <pre id="logs" class="card-body text-monospace preserve-whitespace"><div class="info">[2025-12-25T02:19:50.030Z] [INFO] Page loaded
+</div><div class="info">[2025-12-25T02:19:50.048Z] [INFO] [FETCH-REGIONS] Successfully fetched regions!
+</div><div class="info">[2025-12-25T02:19:52.242Z] [INFO] [FORM_VALUES] Running the sample with the following options: {
+  "region": "us-east-2",
+  "channelName": "ces_stream",
+  "clientId": "mjksxna8-nzk2a6tr8ie",
+  "sendVideo": false,
+  "sendAudio": false,
+  "streamName": "",
+  "autoDetermineMediaIngestMode": false,
+  "showJSSButton": false,
+  "showJSSAsViewerButton": false,
+  "openDataChannel": false,
+  "widescreen": true,
+  "fullscreen": false,
+  "useTrickleICE": true,
+  "natTraversalDisabled": false,
+  "forceSTUN": false,
+  "forceTURN": false,
+  "accessKeyId": "********************",
+  "useDualStackEndpoints": false,
+  "secretAccessKey": "****************************************",
+  "enableDQPmetrics": false,
+  "enableProfileTimeline": false,
+  "sendHostCandidates": true,
+  "acceptHostCandidates": true,
+  "sendRelayCandidates": true,
+  "acceptRelayCandidates": true,
+  "sendSrflxCandidates": true,
+  "acceptSrflxCandidates": true,
+  "sendPrflxCandidates": true,
+  "acceptPrflxCandidates": true,
+  "sendTcpCandidates": true,
+  "acceptTcpCandidates": true,
+  "sendUdpCandidates": true,
+  "acceptUdpCandidates": true,
+  "mediaIngestionModeOverride": false,
+  "signalingReconnect": true,
+  "logAwsSdkCalls": false,
+  "turnWithUdp": true,
+  "turnsWithUdp": true,
+  "turnsWithTcp": true,
+  "oneTurnServerSetOnly": true
+}
+</div><div class="info">[2025-12-25T02:19:52.244Z] [INFO] [VIEWER] Client id is: mjksxna8-nzk2a6tr8ie
+</div><div class="info">[2025-12-25T02:19:52.469Z] [INFO] [VIEWER] Channel ARN: arn:aws:kinesisvideo:us-east-2:783764607809:channel/ces_stream/1766462957427
+</div><div class="info">[2025-12-25T02:19:52.470Z] [INFO] [VIEWER] Not using media ingestion feature
+</div><div class="info">[2025-12-25T02:19:52.913Z] [INFO] [VIEWER] Endpoints: {
+  "HTTPS": "https://r-b0356e67.kinesisvideo.us-east-2.amazonaws.com",
+  "WSS": "wss://v-dc297268.kinesisvideo.us-east-2.amazonaws.com"
+}
+</div><div class="info">[2025-12-25T02:19:55.431Z] [INFO] [VIEWER] ICE servers: [
+  {
+    "urls": "stun:stun.kinesisvideo.us-east-2.amazonaws.com:443"
+  },
+  {
+    "urls": [
+      "turn:18-117-186-42.t-c01cb9af.kinesisvideo.us-east-2.amazonaws.com:443?transport=udp",
+      "turns:18-117-186-42.t-c01cb9af.kinesisvideo.us-east-2.amazonaws.com:443?transport=udp",
+      "turns:18-117-186-42.t-c01cb9af.kinesisvideo.us-east-2.amazonaws.com:443?transport=tcp"
+    ],
+    "username": "1766629495:djE6YXJuOmF3czpraW5lc2lzdmlkZW86dXMtZWFzdC0yOjc4Mzc2NDYwNzgwOTpjaGFubmVsL2Nlc19zdHJlYW0vMTc2NjQ2Mjk1NzQyNw==",
+    "credential": "qov+OFeARxNi1Y+Ag3mjYfL02WVaXWYDCY+jt+4N5CA="
+  }
+]
+</div><div class="info">[2025-12-25T02:19:55.434Z] [INFO] [VIEWER] Starting viewer connection
+</div><div class="debug d-none">[2025-12-25T02:19:55.434Z] [DEBUG] [VIEWER] Signing the url started at "2025-12-25T02:19:55.434Z"
+</div><div class="debug d-none">[2025-12-25T02:19:55.435Z] [DEBUG] [VIEWER] Signing the url ended at "2025-12-25T02:19:55.435Z"
+</div><div class="info">[2025-12-25T02:19:55.435Z] [INFO] [VIEWER] Time to sign the request: 1 ms
+</div><div class="info">[2025-12-25T02:19:55.435Z] [INFO] [VIEWER] Connecting to KVS Signaling...
+</div><div class="debug d-none">[2025-12-25T02:19:55.436Z] [DEBUG] [VIEWER] ConnectAsViewer started at "2025-12-25T02:19:55.435Z"
+</div><div class="debug d-none">[2025-12-25T02:19:56.352Z] [DEBUG] [VIEWER] ConnectAsViewer ended at "2025-12-25T02:19:56.352Z"
+</div><div class="info">[2025-12-25T02:19:56.352Z] [INFO] [VIEWER] Connected to signaling service
+</div><div class="info">[2025-12-25T02:19:56.353Z] [INFO] [VIEWER] Time to connect to signaling: 917 ms
+</div><div class="info">[2025-12-25T02:19:56.353Z] [INFO] [VIEWER] Filters: Video: video/H264, Audio: audio/opus
+</div><div class="debug d-none">[2025-12-25T02:19:56.353Z] [DEBUG] [VIEWER] All accepted codecs: Video: [
+  {
+    "clockRate": 90000,
+    "mimeType": "video/H264",
+    "sdpFmtpLine": "level-asymmetry-allowed=1;packetization-mode=1;profile-level-id=42001f"
+  },
+  {
+    "clockRate": 90000,
+    "mimeType": "video/H264",
+    "sdpFmtpLine": "level-asymmetry-allowed=1;packetization-mode=0;profile-level-id=42001f"
+  },
+  {
+    "clockRate": 90000,
+    "mimeType": "video/H264",
+    "sdpFmtpLine": "level-asymmetry-allowed=1;packetization-mode=1;profile-level-id=42e01f"
+  },
+  {
+    "clockRate": 90000,
+    "mimeType": "video/H264",
+    "sdpFmtpLine": "level-asymmetry-allowed=1;packetization-mode=0;profile-level-id=42e01f"
+  },
+  {
+    "clockRate": 90000,
+    "mimeType": "video/H264",
+    "sdpFmtpLine": "level-asymmetry-allowed=1;packetization-mode=1;profile-level-id=4d001f"
+  },
+  {
+    "clockRate": 90000,
+    "mimeType": "video/H264",
+    "sdpFmtpLine": "level-asymmetry-allowed=1;packetization-mode=0;profile-level-id=4d001f"
+  }
+] Audio: [
+  {
+    "channels": 2,
+    "clockRate": 48000,
+    "mimeType": "audio/opus",
+    "sdpFmtpLine": "minptime=10;useinbandfec=1"
+  }
+]
+</div><div class="info">[2025-12-25T02:19:56.353Z] [INFO] [VIEWER] Creating SDP offer
+</div><div class="info">[2025-12-25T02:19:56.361Z] [INFO] [VIEWER] Sending SDP offer
+</div><div class="debug d-none">[2025-12-25T02:19:56.361Z] [DEBUG] SDP offer: {
+  "type": "offer",
+  "sdp": "v=0\r\no=- 4529582776070528066 2 IN IP4 127.0.0.1\r\ns=-\r\nt=0 0\r\na=group:BUNDLE 0 1\r\na=extmap-allow-mixed\r\na=msid-semantic: WMS\r\nm=audio 9 UDP/TLS/RTP/SAVPF 111 63 9 0 8 13 110 126\r\nc=IN IP4 0.0.0.0\r\na=rtcp:9 IN IP4 0.0.0.0\r\na=ice-ufrag:v4mb\r\na=ice-pwd:ffRZC4Ha8rlSuU9BOfdKpUs8\r\na=ice-options:trickle\r\na=fingerprint:sha-256 EF:94:18:AC:40:91:F7:02:D3:64:50:E3:6F:DB:A2:CB:3B:2F:3D:6C:E0:9E:32:79:E4:23:D5:19:86:01:31:8B\r\na=setup:actpass\r\na=mid:0\r\na=extmap:1 urn:ietf:params:rtp-hdrext:ssrc-audio-level\r\na=extmap:2 http://www.webrtc.org/experiments/rtp-hdrext/abs-send-time\r\na=extmap:3 http://www.ietf.org/id/draft-holmer-rmcat-transport-wide-cc-extensions-01\r\na=extmap:4 urn:ietf:params:rtp-hdrext:sdes:mid\r\na=recvonly\r\na=rtcp-mux\r\na=rtcp-rsize\r\na=rtpmap:111 opus/48000/2\r\na=rtcp-fb:111 transport-cc\r\na=fmtp:111 minptime=10;useinbandfec=1\r\na=rtpmap:63 red/48000/2\r\na=fmtp:63 111/111\r\na=rtpmap:9 G722/8000\r\na=rtpmap:0 PCMU/8000\r\na=rtpmap:8 PCMA/8000\r\na=rtpmap:13 CN/8000\r\na=rtpmap:110 telephone-event/48000\r\na=rtpmap:126 telephone-event/8000\r\nm=video 9 UDP/TLS/RTP/SAVPF 96 97 98 99 100 101 35 36 37 38 103 104 107 108 109 114 115 116 117 118 39 40 41 42 43 44 45 46 47 48 119 120 121 122 123 124 125 49\r\nc=IN IP4 0.0.0.0\r\na=rtcp:9 IN IP4 0.0.0.0\r\na=ice-ufrag:v4mb\r\na=ice-pwd:ffRZC4Ha8rlSuU9BOfdKpUs8\r\na=ice-options:trickle\r\na=fingerprint:sha-256 EF:94:18:AC:40:91:F7:02:D3:64:50:E3:6F:DB:A2:CB:3B:2F:3D:6C:E0:9E:32:79:E4:23:D5:19:86:01:31:8B\r\na=setup:actpass\r\na=mid:1\r\na=extmap:14 urn:ietf:params:rtp-hdrext:toffset\r\na=extmap:2 http://www.webrtc.org/experiments/rtp-hdrext/abs-send-time\r\na=extmap:13 urn:3gpp:video-orientation\r\na=extmap:3 http://www.ietf.org/id/draft-holmer-rmcat-transport-wide-cc-extensions-01\r\na=extmap:5 http://www.webrtc.org/experiments/rtp-hdrext/playout-delay\r\na=extmap:6 http://www.webrtc.org/experiments/rtp-hdrext/video-content-type\r\na=extmap:7 http://www.webrtc.org/experiments/rtp-hdrext/video-timing\r\na=extmap:8 http://www.webrtc.org/experiments/rtp-hdrext/color-space\r\na=extmap:4 urn:ietf:params:rtp-hdrext:sdes:mid\r\na=extmap:10 urn:ietf:params:rtp-hdrext:sdes:rtp-stream-id\r\na=extmap:11 urn:ietf:params:rtp-hdrext:sdes:repaired-rtp-stream-id\r\na=recvonly\r\na=rtcp-mux\r\na=rtcp-rsize\r\na=rtpmap:96 VP8/90000\r\na=rtcp-fb:96 goog-remb\r\na=rtcp-fb:96 transport-cc\r\na=rtcp-fb:96 ccm fir\r\na=rtcp-fb:96 nack\r\na=rtcp-fb:96 nack pli\r\na=rtpmap:97 rtx/90000\r\na=fmtp:97 apt=96\r\na=rtpmap:98 VP9/90000\r\na=rtcp-fb:98 goog-remb\r\na=rtcp-fb:98 transport-cc\r\na=rtcp-fb:98 ccm fir\r\na=rtcp-fb:98 nack\r\na=rtcp-fb:98 nack pli\r\na=fmtp:98 profile-id=0\r\na=rtpmap:99 rtx/90000\r\na=fmtp:99 apt=98\r\na=rtpmap:100 VP9/90000\r\na=rtcp-fb:100 goog-remb\r\na=rtcp-fb:100 transport-cc\r\na=rtcp-fb:100 ccm fir\r\na=rtcp-fb:100 nack\r\na=rtcp-fb:100 nack pli\r\na=fmtp:100 profile-id=2\r\na=rtpmap:101 rtx/90000\r\na=fmtp:101 apt=100\r\na=rtpmap:35 VP9/90000\r\na=rtcp-fb:35 goog-remb\r\na=rtcp-fb:35 transport-cc\r\na=rtcp-fb:35 ccm fir\r\na=rtcp-fb:35 nack\r\na=rtcp-fb:35 nack pli\r\na=fmtp:35 profile-id=1\r\na=rtpmap:36 rtx/90000\r\na=fmtp:36 apt=35\r\na=rtpmap:37 VP9/90000\r\na=rtcp-fb:37 goog-remb\r\na=rtcp-fb:37 transport-cc\r\na=rtcp-fb:37 ccm fir\r\na=rtcp-fb:37 nack\r\na=rtcp-fb:37 nack pli\r\na=fmtp:37 profile-id=3\r\na=rtpmap:38 rtx/90000\r\na=fmtp:38 apt=37\r\na=rtpmap:103 H264/90000\r\na=rtcp-fb:103 goog-remb\r\na=rtcp-fb:103 transport-cc\r\na=rtcp-fb:103 ccm fir\r\na=rtcp-fb:103 nack\r\na=rtcp-fb:103 nack pli\r\na=fmtp:103 level-asymmetry-allowed=1;packetization-mode=1;profile-level-id=42001f\r\na=rtpmap:104 rtx/90000\r\na=fmtp:104 apt=103\r\na=rtpmap:107 H264/90000\r\na=rtcp-fb:107 goog-remb\r\na=rtcp-fb:107 transport-cc\r\na=rtcp-fb:107 ccm fir\r\na=rtcp-fb:107 nack\r\na=rtcp-fb:107 nack pli\r\na=fmtp:107 level-asymmetry-allowed=1;packetization-mode=0;profile-level-id=42001f\r\na=rtpmap:108 rtx/90000\r\na=fmtp:108 apt=107\r\na=rtpmap:109 H264/90000\r\na=rtcp-fb:109 goog-remb\r\na=rtcp-fb:109 transport-cc\r\na=rtcp-fb:109 ccm fir\r\na=rtcp-fb:109 nack\r\na=rtcp-fb:109 nack pli\r\na=fmtp:109 level-asymmetry-allowed=1;packetization-mode=1;profile-level-id=42e01f\r\na=rtpmap:114 rtx/90000\r\na=fmtp:114 apt=109\r\na=rtpmap:115 H264/90000\r\na=rtcp-fb:115 goog-remb\r\na=rtcp-fb:115 transport-cc\r\na=rtcp-fb:115 ccm fir\r\na=rtcp-fb:115 nack\r\na=rtcp-fb:115 nack pli\r\na=fmtp:115 level-asymmetry-allowed=1;packetization-mode=0;profile-level-id=42e01f\r\na=rtpmap:116 rtx/90000\r\na=fmtp:116 apt=115\r\na=rtpmap:117 H264/90000\r\na=rtcp-fb:117 goog-remb\r\na=rtcp-fb:117 transport-cc\r\na=rtcp-fb:117 ccm fir\r\na=rtcp-fb:117 nack\r\na=rtcp-fb:117 nack pli\r\na=fmtp:117 level-asymmetry-allowed=1;packetization-mode=1;profile-level-id=4d001f\r\na=rtpmap:118 rtx/90000\r\na=fmtp:118 apt=117\r\na=rtpmap:39 H264/90000\r\na=rtcp-fb:39 goog-remb\r\na=rtcp-fb:39 transport-cc\r\na=rtcp-fb:39 ccm fir\r\na=rtcp-fb:39 nack\r\na=rtcp-fb:39 nack pli\r\na=fmtp:39 level-asymmetry-allowed=1;packetization-mode=0;profile-level-id=4d001f\r\na=rtpmap:40 rtx/90000\r\na=fmtp:40 apt=39\r\na=rtpmap:41 H264/90000\r\na=rtcp-fb:41 goog-remb\r\na=rtcp-fb:41 transport-cc\r\na=rtcp-fb:41 ccm fir\r\na=rtcp-fb:41 nack\r\na=rtcp-fb:41 nack pli\r\na=fmtp:41 level-asymmetry-allowed=1;packetization-mode=1;profile-level-id=f4001f\r\na=rtpmap:42 rtx/90000\r\na=fmtp:42 apt=41\r\na=rtpmap:43 H264/90000\r\na=rtcp-fb:43 goog-remb\r\na=rtcp-fb:43 transport-cc\r\na=rtcp-fb:43 ccm fir\r\na=rtcp-fb:43 nack\r\na=rtcp-fb:43 nack pli\r\na=fmtp:43 level-asymmetry-allowed=1;packetization-mode=0;profile-level-id=f4001f\r\na=rtpmap:44 rtx/90000\r\na=fmtp:44 apt=43\r\na=rtpmap:45 AV1/90000\r\na=rtcp-fb:45 goog-remb\r\na=rtcp-fb:45 transport-cc\r\na=rtcp-fb:45 ccm fir\r\na=rtcp-fb:45 nack\r\na=rtcp-fb:45 nack pli\r\na=fmtp:45 level-idx=5;profile=0;tier=0\r\na=rtpmap:46 rtx/90000\r\na=fmtp:46 apt=45\r\na=rtpmap:47 AV1/90000\r\na=rtcp-fb:47 goog-remb\r\na=rtcp-fb:47 transport-cc\r\na=rtcp-fb:47 ccm fir\r\na=rtcp-fb:47 nack\r\na=rtcp-fb:47 nack pli\r\na=fmtp:47 level-idx=5;profile=1;tier=0\r\na=rtpmap:48 rtx/90000\r\na=fmtp:48 apt=47\r\na=rtpmap:119 H264/90000\r\na=rtcp-fb:119 goog-remb\r\na=rtcp-fb:119 transport-cc\r\na=rtcp-fb:119 ccm fir\r\na=rtcp-fb:119 nack\r\na=rtcp-fb:119 nack pli\r\na=fmtp:119 level-asymmetry-allowed=1;packetization-mode=1;profile-level-id=64001f\r\na=rtpmap:120 rtx/90000\r\na=fmtp:120 apt=119\r\na=rtpmap:121 H264/90000\r\na=rtcp-fb:121 goog-remb\r\na=rtcp-fb:121 transport-cc\r\na=rtcp-fb:121 ccm fir\r\na=rtcp-fb:121 nack\r\na=rtcp-fb:121 nack pli\r\na=fmtp:121 level-asymmetry-allowed=1;packetization-mode=0;profile-level-id=64001f\r\na=rtpmap:122 rtx/90000\r\na=fmtp:122 apt=121\r\na=rtpmap:123 red/90000\r\na=rtpmap:124 rtx/90000\r\na=fmtp:124 apt=123\r\na=rtpmap:125 ulpfec/90000\r\na=rtpmap:49 flexfec-03/90000\r\na=rtcp-fb:49 goog-remb\r\na=rtcp-fb:49 transport-cc\r\na=fmtp:49 repair-window=10000000\r\n"
+}
+</div><div class="info">[2025-12-25T02:19:56.361Z] [INFO] [VIEWER] Generating ICE candidates
+</div><div class="info">[2025-12-25T02:19:56.364Z] [INFO] [VIEWER] Generated ICE candidate
+</div><div class="debug d-none">[2025-12-25T02:19:56.364Z] [DEBUG] ICE candidate: {
+  "candidate": "candidate:941647644 1 udp 2113937151 393e28b1-211d-4d3e-9059-ecfad18cc2c8.local 58261 typ host generation 0 ufrag v4mb network-cost 999",
+  "sdpMid": "0",
+  "sdpMLineIndex": 0,
+  "usernameFragment": "v4mb"
+}
+</div><div class="info">[2025-12-25T02:19:56.364Z] [INFO] [VIEWER] Sending ICE candidate
+</div><div class="info">[2025-12-25T02:19:56.364Z] [INFO] [VIEWER] Generated ICE candidate
+</div><div class="debug d-none">[2025-12-25T02:19:56.365Z] [DEBUG] ICE candidate: {
+  "candidate": "candidate:2389511943 1 udp 2113939711 81476cc9-5e98-44b9-b468-95db1b03151a.local 58262 typ host generation 0 ufrag v4mb network-cost 999",
+  "sdpMid": "0",
+  "sdpMLineIndex": 0,
+  "usernameFragment": "v4mb"
+}
+</div><div class="info">[2025-12-25T02:19:56.365Z] [INFO] [VIEWER] Sending ICE candidate
+</div><div class="info">[2025-12-25T02:19:56.365Z] [INFO] [VIEWER] Generated ICE candidate
+</div><div class="debug d-none">[2025-12-25T02:19:56.365Z] [DEBUG] ICE candidate: {
+  "candidate": "candidate:941647644 1 udp 2113937151 393e28b1-211d-4d3e-9059-ecfad18cc2c8.local 58263 typ host generation 0 ufrag v4mb network-cost 999",
+  "sdpMid": "1",
+  "sdpMLineIndex": 1,
+  "usernameFragment": "v4mb"
+}
+</div><div class="info">[2025-12-25T02:19:56.365Z] [INFO] [VIEWER] Sending ICE candidate
+</div><div class="info">[2025-12-25T02:19:56.365Z] [INFO] [VIEWER] Generated ICE candidate
+</div><div class="debug d-none">[2025-12-25T02:19:56.365Z] [DEBUG] ICE candidate: {
+  "candidate": "candidate:2389511943 1 udp 2113939711 81476cc9-5e98-44b9-b468-95db1b03151a.local 58264 typ host generation 0 ufrag v4mb network-cost 999",
+  "sdpMid": "1",
+  "sdpMLineIndex": 1,
+  "usernameFragment": "v4mb"
+}
+</div><div class="info">[2025-12-25T02:19:56.366Z] [INFO] [VIEWER] Sending ICE candidate
+</div><div class="info">[2025-12-25T02:19:56.700Z] [INFO] [VIEWER] Generated ICE candidate
+</div><div class="debug d-none">[2025-12-25T02:19:56.700Z] [DEBUG] ICE candidate: {
+  "candidate": "candidate:516261996 1 udp 1677729535 121.35.46.24 58261 typ srflx raddr 0.0.0.0 rport 0 generation 0 ufrag v4mb network-cost 999",
+  "sdpMid": "0",
+  "sdpMLineIndex": 0,
+  "usernameFragment": "v4mb"
+}
+</div><div class="info">[2025-12-25T02:19:56.701Z] [INFO] [VIEWER] Sending ICE candidate
+</div><div class="info">[2025-12-25T02:19:56.703Z] [INFO] [VIEWER] Generated ICE candidate
+</div><div class="debug d-none">[2025-12-25T02:19:56.704Z] [DEBUG] ICE candidate: {
+  "candidate": "candidate:516261996 1 udp 1677729535 121.35.46.24 58263 typ srflx raddr 0.0.0.0 rport 0 generation 0 ufrag v4mb network-cost 999",
+  "sdpMid": "1",
+  "sdpMLineIndex": 1,
+  "usernameFragment": "v4mb"
+}
+</div><div class="info">[2025-12-25T02:19:56.704Z] [INFO] [VIEWER] Sending ICE candidate
+</div><div class="info">[2025-12-25T02:19:57.703Z] [INFO] [VIEWER] Generated ICE candidate
+</div><div class="debug d-none">[2025-12-25T02:19:57.704Z] [DEBUG] ICE candidate: {
+  "candidate": "candidate:1216245796 1 udp 8191 18.117.186.42 59891 typ relay raddr 103.172.81.247 rport 58015 generation 0 ufrag v4mb network-cost 999",
+  "sdpMid": "1",
+  "sdpMLineIndex": 1,
+  "usernameFragment": "v4mb"
+}
+</div><div class="info">[2025-12-25T02:19:57.704Z] [INFO] [VIEWER] Sending ICE candidate
+</div><div class="info">[2025-12-25T02:19:57.737Z] [INFO] [VIEWER] Generated ICE candidate
+</div><div class="debug d-none">[2025-12-25T02:19:57.738Z] [DEBUG] ICE candidate: {
+  "candidate": "candidate:1216245796 1 udp 8191 18.117.186.42 59215 typ relay raddr 103.172.81.247 rport 54231 generation 0 ufrag v4mb network-cost 999",
+  "sdpMid": "0",
+  "sdpMLineIndex": 0,
+  "usernameFragment": "v4mb"
+}
+</div><div class="info">[2025-12-25T02:19:57.738Z] [INFO] [VIEWER] Sending ICE candidate
+</div><div class="info">[2025-12-25T02:19:57.746Z] [INFO] [VIEWER] Generated ICE candidate
+</div><div class="debug d-none">[2025-12-25T02:19:57.746Z] [DEBUG] ICE candidate: {
+  "candidate": "candidate:1216245796 1 udp 8447 18.117.186.42 63769 typ relay raddr 103.172.81.247 rport 18845 generation 0 ufrag v4mb network-cost 999",
+  "sdpMid": "0",
+  "sdpMLineIndex": 0,
+  "usernameFragment": "v4mb"
+}
+</div><div class="info">[2025-12-25T02:19:57.746Z] [INFO] [VIEWER] Sending ICE candidate
+</div><div class="info">[2025-12-25T02:19:57.746Z] [INFO] [VIEWER] Generated ICE candidate
+</div><div class="debug d-none">[2025-12-25T02:19:57.747Z] [DEBUG] ICE candidate: {
+  "candidate": "candidate:1216245796 1 udp 8191 18.117.186.42 59381 typ relay raddr 103.172.81.247 rport 44593 generation 0 ufrag v4mb network-cost 999",
+  "sdpMid": "0",
+  "sdpMLineIndex": 0,
+  "usernameFragment": "v4mb"
+}
+</div><div class="info">[2025-12-25T02:19:57.747Z] [INFO] [VIEWER] Sending ICE candidate
+</div><div class="info">[2025-12-25T02:19:57.747Z] [INFO] [VIEWER] Generated ICE candidate
+</div><div class="debug d-none">[2025-12-25T02:19:57.747Z] [DEBUG] ICE candidate: {
+  "candidate": "candidate:1216245796 1 udp 8447 18.117.186.42 65376 typ relay raddr 103.172.81.247 rport 42733 generation 0 ufrag v4mb network-cost 999",
+  "sdpMid": "0",
+  "sdpMLineIndex": 0,
+  "usernameFragment": "v4mb"
+}
+</div><div class="info">[2025-12-25T02:19:57.747Z] [INFO] [VIEWER] Sending ICE candidate
+</div><div class="info">[2025-12-25T02:19:57.748Z] [INFO] [VIEWER] Generated ICE candidate
+</div><div class="debug d-none">[2025-12-25T02:19:57.748Z] [DEBUG] ICE candidate: {
+  "candidate": "candidate:1216245796 1 udp 8191 18.117.186.42 55463 typ relay raddr 103.172.81.247 rport 11689 generation 0 ufrag v4mb network-cost 999",
+  "sdpMid": "1",
+  "sdpMLineIndex": 1,
+  "usernameFragment": "v4mb"
+}
+</div><div class="info">[2025-12-25T02:19:57.748Z] [INFO] [VIEWER] Sending ICE candidate
+</div><div class="info">[2025-12-25T02:19:57.800Z] [INFO] [VIEWER] Generated ICE candidate
+</div><div class="debug d-none">[2025-12-25T02:19:57.800Z] [DEBUG] ICE candidate: {
+  "candidate": "candidate:1216245796 1 udp 8447 18.117.186.42 63254 typ relay raddr 103.172.81.247 rport 42717 generation 0 ufrag v4mb network-cost 999",
+  "sdpMid": "1",
+  "sdpMLineIndex": 1,
+  "usernameFragment": "v4mb"
+}
+</div><div class="info">[2025-12-25T02:19:57.800Z] [INFO] [VIEWER] Sending ICE candidate
+</div><div class="info">[2025-12-25T02:19:57.824Z] [INFO] [VIEWER] Generated ICE candidate
+</div><div class="debug d-none">[2025-12-25T02:19:57.825Z] [DEBUG] ICE candidate: {
+  "candidate": "candidate:1216245796 1 udp 8447 18.117.186.42 50360 typ relay raddr 103.172.81.247 rport 12765 generation 0 ufrag v4mb network-cost 999",
+  "sdpMid": "1",
+  "sdpMLineIndex": 1,
+  "usernameFragment": "v4mb"
+}
+</div><div class="info">[2025-12-25T02:19:57.825Z] [INFO] [VIEWER] Sending ICE candidate
+</div><div class="info">[2025-12-25T02:19:59.609Z] [INFO] [VIEWER] Received SDP answer
+</div><div class="debug d-none">[2025-12-25T02:19:59.610Z] [DEBUG] SDP answer: {
+  "type": "answer",
+  "sdp": "v=0\r\no=- 629503537 2 IN IP4 127.0.0.1\r\ns=-\r\nt=0 0\r\na=group:BUNDLE 0 1\r\na=ice-options:trickle\r\na=msid-semantic: WMS myKvsVideoStream\r\nm=audio 9 UDP/TLS/RTP/SAVPF 8\r\nc=IN IP4 127.0.0.1\r\na=candidate:0 1 udp 2130706431 10.2.233.178 46658 typ host raddr 0.0.0.0 rport 0 generation 0 network-cost 999\r\na=msid:myKvsVideoStream myAudioTrack\r\na=ssrc:2026891584 cname:QAl8mBFTJBLwUuaf\r\na=ssrc:2026891584 msid:myKvsVideoStream myAudioTrack\r\na=ssrc:2026891584 mslabel:myKvsVideoStream\r\na=ssrc:2026891584 label:myAudioTrack\r\na=rtcp:9 IN IP4 0.0.0.0\r\na=ice-ufrag:jcS7\r\na=ice-pwd:j8yucJZgBWArsA0Pan9oHq6b\r\na=ice-options:trickle\r\na=fingerprint:sha-256 77:62:87:4F:63:E0:B2:DD:8C:20:B5:0F:B4:16:71:1B:F7:3C:C2:52:50:49:0E:6B:25:B3:56:FA:A0:47:3D:19\r\na=setup:active\r\na=mid:0\r\na=sendonly\r\na=rtcp-mux\r\na=rtpmap:8 PCMA/8000\r\na=ssrc:2026891584 cname:QAl8mBFTJBLwUuaf\r\na=ssrc:2026891584 msid:myKvsVideoStream myAudioTrack\r\na=rtcp-fb:8 goog-remb\r\na=rtcp-fb:8 transport-cc\r\nm=video 9 UDP/TLS/RTP/SAVPF 109\r\nc=IN IP4 127.0.0.1\r\na=candidate:0 1 udp 2130706431 10.2.233.178 46658 typ host raddr 0.0.0.0 rport 0 generation 0 network-cost 999\r\na=msid:myKvsVideoStream myVideoTrack\r\na=ssrc:75128532 cname:QAl8mBFTJBLwUuaf\r\na=ssrc:75128532 msid:myKvsVideoStream myVideoTrack\r\na=ssrc:75128532 mslabel:myKvsVideoStream\r\na=ssrc:75128532 label:myVideoTrack\r\na=rtcp:9 IN IP4 0.0.0.0\r\na=ice-ufrag:jcS7\r\na=ice-pwd:j8yucJZgBWArsA0Pan9oHq6b\r\na=ice-options:trickle\r\na=fingerprint:sha-256 77:62:87:4F:63:E0:B2:DD:8C:20:B5:0F:B4:16:71:1B:F7:3C:C2:52:50:49:0E:6B:25:B3:56:FA:A0:47:3D:19\r\na=setup:active\r\na=mid:1\r\na=sendonly\r\na=rtcp-mux\r\na=rtcp-rsize\r\na=rtpmap:109 H264/90000\r\na=rtcp-fb:109 nack\r\na=rtcp-fb:109 nack pli\r\na=fmtp:109 level-asymmetry-allowed=1;packetization-mode=1;profile-level-id=42e01f\r\na=ssrc:75128532 cname:QAl8mBFTJBLwUuaf\r\na=ssrc:75128532 msid:myKvsVideoStream myVideoTrack\r\na=rtcp-fb:109 goog-remb\r\na=rtcp-fb:109 transport-cc\r\n"
+}
+</div><div class="info">[2025-12-25T02:19:59.614Z] [INFO] [VIEWER] Received audio track from remote in mediaStream: myKvsVideoStream with track id: abbd5cde-c612-4507-a041-6574fde1cffd
+</div><div class="info">[2025-12-25T02:19:59.614Z] [INFO] [VIEWER] Received video track from remote in mediaStream: myKvsVideoStream with track id: c4832520-150a-4f51-b12c-4e7626217f32
+</div><div class="debug d-none">[2025-12-25T02:19:59.632Z] [DEBUG] [VIEWER] PeerConnection state: connecting
+</div><div class="info">[2025-12-25T02:19:59.635Z] [INFO] [VIEWER] Received ICE candidate
+</div><div class="debug d-none">[2025-12-25T02:19:59.635Z] [DEBUG] ICE candidate {
+  "candidate": "candidate:0 1 udp 2130706431 10.2.233.178 46658 typ host raddr 0.0.0.0 rport 0 generation 0 network-cost 999",
+  "sdpMid": "0",
+  "sdpMLineIndex": 0
+}
+</div><div class="info">[2025-12-25T02:20:00.043Z] [INFO] [VIEWER] Received ICE candidate
+</div><div class="debug d-none">[2025-12-25T02:20:00.044Z] [DEBUG] ICE candidate {
+  "candidate": "candidate:1 1 udp 1694498815 113.84.192.116 29317 typ srflx raddr 0.0.0.0 rport 0 generation 0 network-cost 999",
+  "sdpMid": "0",
+  "sdpMLineIndex": 0
+}
+</div><div class="info">[2025-12-25T02:20:00.198Z] [INFO] [VIEWER] All ICE candidates have been generated
+</div><div class="info">[2025-12-25T02:20:00.364Z] [INFO] [VIEWER] Received ICE candidate
+</div><div class="debug d-none">[2025-12-25T02:20:00.364Z] [DEBUG] ICE candidate {
+  "candidate": "candidate:2 1 udp 16777215 13.58.188.90 58995 typ relay raddr 0.0.0.0 rport 0 generation 0 network-cost 999",
+  "sdpMid": "0",
+  "sdpMLineIndex": 0
+}
+</div><div class="debug d-none">[2025-12-25T02:20:00.495Z] [DEBUG] [VIEWER] PeerConnection state: connected
+</div><div class="info">[2025-12-25T02:20:00.495Z] [INFO] [VIEWER] Connection to peer successful!
+</div><div class="debug d-none">[2025-12-25T02:20:00.497Z] [DEBUG] Chosen candidate pair (unknown): {
+  "local": {
+    "candidate": "candidate:516261996 1 udp 1677729535 121.35.46.24 58261 typ srflx raddr 0.0.0.0 rport 0 generation 0 ufrag v4mb network-cost 999",
+    "sdpMid": "",
+    "sdpMLineIndex": 0,
+    "usernameFragment": "v4mb"
+  },
+  "remote": {
+    "candidate": "candidate:1 1 udp 1694498815 113.84.192.116 29317 typ srflx raddr 0.0.0.0 rport 0 generation 0 ufrag jcS7 network-cost 999",
+    "sdpMid": "",
+    "sdpMLineIndex": 0,
+    "usernameFragment": "jcS7"
+  }
+}
+</div><div class="debug d-none">[2025-12-25T02:20:00.497Z] [DEBUG] Chosen candidate pair (unknown): {
+  "local": {
+    "candidate": "candidate:516261996 1 udp 1677729535 121.35.46.24 58261 typ srflx raddr 0.0.0.0 rport 0 generation 0 ufrag v4mb network-cost 999",
+    "sdpMid": "",
+    "sdpMLineIndex": 0,
+    "usernameFragment": "v4mb"
+  },
+  "remote": {
+    "candidate": "candidate:1 1 udp 1694498815 113.84.192.116 29317 typ srflx raddr 0.0.0.0 rport 0 generation 0 ufrag jcS7 network-cost 999",
+    "sdpMid": "",
+    "sdpMLineIndex": 0,
+    "usernameFragment": "jcS7"
+  }
+}
+</div><div class="info">[2025-12-25T02:20:02.805Z] [INFO] [VIEWER] Stopping viewer connection
+</div><div class="info">[2025-12-25T02:20:03.032Z] [INFO] [VIEWER] Disconnected from signaling channel
+</div></pre>
         </div>
     </div>
 </div>
