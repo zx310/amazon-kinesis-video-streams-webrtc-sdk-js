@@ -93,60 +93,53 @@ function getTabScopedClientID() {
 }
 
 function getFormValues() {
-    // 从UI获取的参数（保持原有逻辑）
-    const region = $('#region').val();
-    const channelName = $('#channelName').val();
-    const clientId = $('#clientId').val() || getTabScopedClientID();
-    const accessKeyId = $('#accessKeyId').val();
-    const secretAccessKey = $('#secretAccessKey').val();
-    
-    // 硬编码的参数值（不再从UI获取）
-    const formValues = {
-        region: region,
-        channelName: channelName,
-        clientId: clientId,
-        sendVideo: false,
-        sendAudio: false,
-        streamName: "",
-        autoDetermineMediaIngestMode: false,
-        showJSSButton: false,
-        showJSSAsViewerButton: false,
-        openDataChannel: false,
-        widescreen: true,
-        fullscreen: false,
-        useTrickleICE: true,
-        natTraversalDisabled: false,
-        forceSTUN: false,
-        forceTURN: false,
-        accessKeyId: accessKeyId,
-        useDualStackEndpoints: false,
-        endpoint: undefined,
-        secretAccessKey: secretAccessKey,
+    const endpointInput = $('#endpoint').val();
+    const endpoint = endpointInput?.trim() || undefined;
+
+    return {
+        region: $('#region').val(),
+        channelName: $('#channelName').val(),
+        clientId: $('#clientId').val() || getTabScopedClientID(),
+        sendVideo: $('#sendVideo').is(':checked'),
+        sendAudio: $('#sendAudio').is(':checked'),
+        streamName: $('#streamName').val(),
+        autoDetermineMediaIngestMode: $('#ingest-media').is(':checked'),
+        showJSSButton: $('#show-join-storage-session-button').is(':checked'),
+        showJSSAsViewerButton: $('#show-join-storage-session-as-viewer-button').is(':checked'),
+        openDataChannel: $('#openDataChannel').is(':checked'),
+        widescreen: $('#widescreen').is(':checked'),
+        fullscreen: $('#fullscreen').is(':checked'),
+        useTrickleICE: $('#useTrickleICE').is(':checked'),
+        natTraversalDisabled: $('#natTraversalDisabled').is(':checked'),
+        forceSTUN: $('#forceSTUN').is(':checked'),
+        forceTURN: $('#forceTURN').is(':checked'),
+        accessKeyId: $('#accessKeyId').val(),
+        useDualStackEndpoints: endpoint === undefined && $('#dual-stack').is(':checked'),
+        endpoint: endpoint,
+        secretAccessKey: $('#secretAccessKey').val(),
         sessionToken: $('#sessionToken').val() || null,
-        enableDQPmetrics: false,
-        enableProfileTimeline: false,
-        sendHostCandidates: true,
-        acceptHostCandidates: true,
-        sendRelayCandidates: true,
-        acceptRelayCandidates: true,
-        sendSrflxCandidates: true,
-        acceptSrflxCandidates: true,
-        sendPrflxCandidates: true,
-        acceptPrflxCandidates: true,
-        sendTcpCandidates: true,
-        acceptTcpCandidates: true,
-        sendUdpCandidates: true,
-        acceptUdpCandidates: true,
-        mediaIngestionModeOverride: false,
-        signalingReconnect: true,
-        logAwsSdkCalls: false,
-        turnWithUdp: true,
-        turnsWithUdp: true,
-        turnsWithTcp: true,
-        oneTurnServerSetOnly: true,
+        enableDQPmetrics: $('#enableDQPmetrics').is(':checked'),
+        enableProfileTimeline: $('#enableProfileTimeline').is(':checked'),
+        sendHostCandidates: $('#send-host').is(':checked'),
+        acceptHostCandidates: $('#accept-host').is(':checked'),
+        sendRelayCandidates: $('#send-relay').is(':checked'),
+        acceptRelayCandidates: $('#accept-relay').is(':checked'),
+        sendSrflxCandidates: $('#send-srflx').is(':checked'),
+        acceptSrflxCandidates: $('#accept-srflx').is(':checked'),
+        sendPrflxCandidates: $('#send-prflx').is(':checked'),
+        acceptPrflxCandidates: $('#accept-prflx').is(':checked'),
+        sendTcpCandidates: $('#send-tcp').is(':checked'),
+        acceptTcpCandidates: $('#accept-tcp').is(':checked'),
+        sendUdpCandidates: $('#send-udp').is(':checked'),
+        acceptUdpCandidates: $('#accept-udp').is(':checked'),
+        mediaIngestionModeOverride: $('#ingest-media-manual-on').attr('data-selected') === 'true',
+        signalingReconnect: $('#signaling-reconnect').is(':checked'),
+        logAwsSdkCalls: $('#log-aws-sdk-calls').is(':checked'),
+        turnWithUdp: $('#turn-with-udp').is(':checked'),
+        turnsWithUdp: $('#turns-with-udp').is(':checked'),
+        turnsWithTcp: $('#turns-with-tcp').is(':checked'),
+        oneTurnServerSetOnly: $('#turn-one-set-only').is(':checked'),
     };
-    
-    return formValues;
 }
 
 function toggleDataChannelElements() {
@@ -167,10 +160,34 @@ function onStop() {
         return;
     }
 
-    stopViewer();
-    $('#viewer').addClass('d-none');
+    if (!$('#master').hasClass('d-none')) {
+        stopMaster();
+        $('#master').addClass('d-none');
+        $('#master .remote-view').removeClass('d-none');
+        $('#master .remote').removeClass('d-none');
+
+        $('#master-heading').text('Master');
+        $('#master-section-heading').text('Master Section');
+        $('#master-viewer-heading').text('Viewer Return Channel');
+        $('#stop-master-button').text('Stop Master');
+        $('#master-data-channel-input').text('DataChannel message to send to viewer(s)');
+    } else {
+        stopViewer();
+        $('#viewer').addClass('d-none');
+    }
+
+    if (getFormValues().enableDQPmetrics) {
+        $('#dqpmetrics').addClass('d-none');
+        $('#webrtc-live-stats').addClass('d-none');
+    }
+
+    if (getFormValues().enableProfileTimeline) {
+        $('#timeline-profiling').addClass('d-none');
+    }
 
     $('#form').removeClass('d-none');
+    $('#join-storage-session-button').addClass('d-none');
+    $('#join-storage-session-as-viewer-button').addClass('d-none');
     ROLE = null;
     channelHelper = null;
 }
@@ -209,6 +226,10 @@ $('#master-button').click(async () => {
     toggleDataChannelElements();
 
     printFormValues(formValues);
+
+    startMaster(localView, remoteView, formValues, onStatsReport, event => {
+        remoteMessage.append(`${event.data}\n`);
+    });
 });
 
 function printFormValues(formValues) {
@@ -222,6 +243,8 @@ function printFormValues(formValues) {
 $('#clear-logs').click(() => {
     $('#logs').empty();
 });
+
+$('#stop-master-button').click(onStop);
 
 $('#viewer-button').click(async () => {
     const form = $('#form');
@@ -268,17 +291,30 @@ $('#viewer-button').click(async () => {
     const localMessage = $('#viewer .local-message')[0];
     const remoteMessage = $('#viewer .remote-message')[0];
 
+    if (formValues.enableDQPmetrics) {
+        $('#dqpmetrics').removeClass('d-none');
+        $('#webrtc-live-stats').removeClass('d-none');
+    }
+
+    if (formValues.enableProfileTimeline) {
+        $('#timeline-profiling').removeClass('d-none');
+    }
+
     $(remoteMessage).empty();
     localMessage.value = '';
     toggleDataChannelElements();
+
     printFormValues(formValues);
+
     startViewer(localView, remoteView, formValues, onStatsReport, remoteMessage);
 });
 
 function updateViewerUI() {
     $('#master-heading').text('Viewer');
+    $('#master-section-heading').text('Return Channel');
     $('#master-viewer-heading').text('From Master');
     $('#stop-master-button').text('Stop Viewer');
+    $('#master-data-channel-input').text('DataChannel message to send to master');
     $('#master-button').click();
 }
 
