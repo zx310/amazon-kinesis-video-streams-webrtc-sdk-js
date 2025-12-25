@@ -167,34 +167,10 @@ function onStop() {
         return;
     }
 
-    if (!$('#master').hasClass('d-none')) {
-        stopMaster();
-        $('#master').addClass('d-none');
-        $('#master .remote-view').removeClass('d-none');
-        $('#master .remote').removeClass('d-none');
-
-        $('#master-heading').text('Master');
-        $('#master-section-heading').text('Master Section');
-        $('#master-viewer-heading').text('Viewer Return Channel');
-        $('#stop-master-button').text('Stop Master');
-        $('#master-data-channel-input').text('DataChannel message to send to viewer(s)');
-    } else {
-        stopViewer();
-        $('#viewer').addClass('d-none');
-    }
-
-    if (getFormValues().enableDQPmetrics) {
-        $('#dqpmetrics').addClass('d-none');
-        $('#webrtc-live-stats').addClass('d-none');
-    }
-
-    if (getFormValues().enableProfileTimeline) {
-        $('#timeline-profiling').addClass('d-none');
-    }
+    stopViewer();
+    $('#viewer').addClass('d-none');
 
     $('#form').removeClass('d-none');
-    $('#join-storage-session-button').addClass('d-none');
-    $('#join-storage-session-as-viewer-button').addClass('d-none');
     ROLE = null;
     channelHelper = null;
 }
@@ -233,10 +209,6 @@ $('#master-button').click(async () => {
     toggleDataChannelElements();
 
     printFormValues(formValues);
-
-    startMaster(localView, remoteView, formValues, onStatsReport, event => {
-        remoteMessage.append(`${event.data}\n`);
-    });
 });
 
 function printFormValues(formValues) {
@@ -250,8 +222,6 @@ function printFormValues(formValues) {
 $('#clear-logs').click(() => {
     $('#logs').empty();
 });
-
-$('#stop-master-button').click(onStop);
 
 $('#viewer-button').click(async () => {
     const form = $('#form');
@@ -298,30 +268,17 @@ $('#viewer-button').click(async () => {
     const localMessage = $('#viewer .local-message')[0];
     const remoteMessage = $('#viewer .remote-message')[0];
 
-    if (formValues.enableDQPmetrics) {
-        $('#dqpmetrics').removeClass('d-none');
-        $('#webrtc-live-stats').removeClass('d-none');
-    }
-
-    if (formValues.enableProfileTimeline) {
-        $('#timeline-profiling').removeClass('d-none');
-    }
-
     $(remoteMessage).empty();
     localMessage.value = '';
     toggleDataChannelElements();
-
     printFormValues(formValues);
-
     startViewer(localView, remoteView, formValues, onStatsReport, remoteMessage);
 });
 
 function updateViewerUI() {
     $('#master-heading').text('Viewer');
-    $('#master-section-heading').text('Return Channel');
     $('#master-viewer-heading').text('From Master');
     $('#stop-master-button').text('Stop Viewer');
-    $('#master-data-channel-input').text('DataChannel message to send to master');
     $('#master-button').click();
 }
 
