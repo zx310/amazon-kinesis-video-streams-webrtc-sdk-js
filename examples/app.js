@@ -179,7 +179,6 @@ function onStop() {
         $('#master-data-channel-input').text('DataChannel message to send to viewer(s)');
     } else {
         stopViewer();
-        $('#viewer').addClass('d-none');
     }
 
     if (getFormValues().enableDQPmetrics) {
@@ -1095,3 +1094,5 @@ function getCodecFilters() {
 $('.loader').addClass('d-none');
 $('#main').removeClass('d-none');
 console.log('Page loaded');
+// 预先显示Viewer区域的UI框架
+$('#viewer').removeClass('d-none');
