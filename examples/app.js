@@ -93,53 +93,60 @@ function getTabScopedClientID() {
 }
 
 function getFormValues() {
-    const endpointInput = $('#endpoint').val();
-    const endpoint = endpointInput?.trim() || undefined;
-
-    return {
-        region: $('#region').val(),
-        channelName: $('#channelName').val(),
-        clientId: $('#clientId').val() || getTabScopedClientID(),
-        sendVideo: $('#sendVideo').is(':checked'),
-        sendAudio: $('#sendAudio').is(':checked'),
-        streamName: $('#streamName').val(),
-        autoDetermineMediaIngestMode: $('#ingest-media').is(':checked'),
-        showJSSButton: $('#show-join-storage-session-button').is(':checked'),
-        showJSSAsViewerButton: $('#show-join-storage-session-as-viewer-button').is(':checked'),
-        openDataChannel: $('#openDataChannel').is(':checked'),
-        widescreen: $('#widescreen').is(':checked'),
-        fullscreen: $('#fullscreen').is(':checked'),
-        useTrickleICE: $('#useTrickleICE').is(':checked'),
-        natTraversalDisabled: $('#natTraversalDisabled').is(':checked'),
-        forceSTUN: $('#forceSTUN').is(':checked'),
-        forceTURN: $('#forceTURN').is(':checked'),
-        accessKeyId: $('#accessKeyId').val(),
-        useDualStackEndpoints: endpoint === undefined && $('#dual-stack').is(':checked'),
-        endpoint: endpoint,
-        secretAccessKey: $('#secretAccessKey').val(),
+    // 从UI获取的参数（保持原有逻辑）
+    const region = $('#region').val();
+    const channelName = $('#channelName').val();
+    const clientId = $('#clientId').val() || getTabScopedClientID();
+    const accessKeyId = $('#accessKeyId').val();
+    const secretAccessKey = $('#secretAccessKey').val();
+    
+    // 硬编码的参数值（不再从UI获取）
+    const formValues = {
+        region: region,
+        channelName: channelName,
+        clientId: clientId,
+        sendVideo: false,
+        sendAudio: false,
+        streamName: "",
+        autoDetermineMediaIngestMode: false,
+        showJSSButton: false,
+        showJSSAsViewerButton: false,
+        openDataChannel: false,
+        widescreen: true,
+        fullscreen: false,
+        useTrickleICE: true,
+        natTraversalDisabled: false,
+        forceSTUN: false,
+        forceTURN: false,
+        accessKeyId: accessKeyId,
+        useDualStackEndpoints: false,
+        endpoint: undefined,
+        secretAccessKey: secretAccessKey,
         sessionToken: $('#sessionToken').val() || null,
-        enableDQPmetrics: $('#enableDQPmetrics').is(':checked'),
-        enableProfileTimeline: $('#enableProfileTimeline').is(':checked'),
-        sendHostCandidates: $('#send-host').is(':checked'),
-        acceptHostCandidates: $('#accept-host').is(':checked'),
-        sendRelayCandidates: $('#send-relay').is(':checked'),
-        acceptRelayCandidates: $('#accept-relay').is(':checked'),
-        sendSrflxCandidates: $('#send-srflx').is(':checked'),
-        acceptSrflxCandidates: $('#accept-srflx').is(':checked'),
-        sendPrflxCandidates: $('#send-prflx').is(':checked'),
-        acceptPrflxCandidates: $('#accept-prflx').is(':checked'),
-        sendTcpCandidates: $('#send-tcp').is(':checked'),
-        acceptTcpCandidates: $('#accept-tcp').is(':checked'),
-        sendUdpCandidates: $('#send-udp').is(':checked'),
-        acceptUdpCandidates: $('#accept-udp').is(':checked'),
-        mediaIngestionModeOverride: $('#ingest-media-manual-on').attr('data-selected') === 'true',
-        signalingReconnect: $('#signaling-reconnect').is(':checked'),
-        logAwsSdkCalls: $('#log-aws-sdk-calls').is(':checked'),
-        turnWithUdp: $('#turn-with-udp').is(':checked'),
-        turnsWithUdp: $('#turns-with-udp').is(':checked'),
-        turnsWithTcp: $('#turns-with-tcp').is(':checked'),
-        oneTurnServerSetOnly: $('#turn-one-set-only').is(':checked'),
+        enableDQPmetrics: false,
+        enableProfileTimeline: false,
+        sendHostCandidates: true,
+        acceptHostCandidates: true,
+        sendRelayCandidates: true,
+        acceptRelayCandidates: true,
+        sendSrflxCandidates: true,
+        acceptSrflxCandidates: true,
+        sendPrflxCandidates: true,
+        acceptPrflxCandidates: true,
+        sendTcpCandidates: true,
+        acceptTcpCandidates: true,
+        sendUdpCandidates: true,
+        acceptUdpCandidates: true,
+        mediaIngestionModeOverride: false,
+        signalingReconnect: true,
+        logAwsSdkCalls: false,
+        turnWithUdp: true,
+        turnsWithUdp: true,
+        turnsWithTcp: true,
+        oneTurnServerSetOnly: true,
     };
+    
+    return formValues;
 }
 
 function toggleDataChannelElements() {
