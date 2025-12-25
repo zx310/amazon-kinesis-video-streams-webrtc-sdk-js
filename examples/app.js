@@ -251,67 +251,44 @@ $('#clear-logs').click(() => {
 
 $('#stop-master-button').click(onStop);
 
+// 全局状态变量
+let isViewerActive = false;
+
+// 初始化按钮文本
+$('#viewer-button').text('Start Viewer');
+
+// 单按钮点击事件处理
 $('#viewer-button').click(async () => {
-    const form = $('#form');
-    if (!form[0].checkValidity()) {
-        return;
-    }
-    const formValues = getFormValues();
-
-    if (formValues.autoDetermineMediaIngestMode) {
-        channelHelper = new ChannelHelper(formValues.channelName,
-            {
-                region: formValues.region,
-                credentials: {
-                    accessKeyId: formValues.accessKeyId,
-                    secretAccessKey: formValues.secretAccessKey,
-                    sessionToken: formValues.sessionToken,
-                },
-            },
-            formValues.endpoint,
-            KVSWebRTC.Role.VIEWER,
-            ChannelHelper.IngestionMode.DETERMINE_THROUGH_DESCRIBE,
-            '[VIEWER]',
-            formValues.clientId,
-            formValues.logAwsSdkCalls ? console : undefined,
-            formValues.useDualStackEndpoints);
-        await channelHelper.determineMediaIngestionPath();
-
-        if (channelHelper.isIngestionEnabled()) {
-            updateViewerUI();
+    if (isViewerActive) {
+        // 停止Viewer
+        if (ROLE === 'VIEWER') {
+            stopViewer();
+            $('#viewer .remote-view')[0].srcObject = null;
+            $('#viewer .local-view')[0].srcObject = null;
+        }
+        $('#viewer-button').text('Start Viewer');
+        isViewerActive = false;
+        ROLE = null;
+    } else {
+        // 开始Viewer
+        const form = $('#form');
+        if (!form[0].checkValidity()) {
             return;
         }
-    } else if (formValues.mediaIngestionModeOverride) {
-        channelHelper = null;
-        updateViewerUI();
-        return;
+        
+        const formValues = getFormValues();
+        ROLE = 'VIEWER';
+        $('#viewer').removeClass('d-none');
+        
+        const localView = $('#viewer .local-view')[0];
+        const remoteView = $('#viewer .remote-view')[0];
+        const localMessage = $('#viewer .local-message')[0];
+        const remoteMessage = $('#viewer .remote-message')[0];
+        
+        startViewer(localView, remoteView, formValues, onStatsReport, remoteMessage);
+        $('#viewer-button').text('Stop Viewer');
+        isViewerActive = true;
     }
-
-    ROLE = 'VIEWER';
-    form.addClass('d-none');
-    $('#viewer').removeClass('d-none');
-
-    const localView = $('#viewer .local-view')[0];
-    const remoteView = $('#viewer .remote-view')[0];
-    const localMessage = $('#viewer .local-message')[0];
-    const remoteMessage = $('#viewer .remote-message')[0];
-
-    if (formValues.enableDQPmetrics) {
-        $('#dqpmetrics').removeClass('d-none');
-        $('#webrtc-live-stats').removeClass('d-none');
-    }
-
-    if (formValues.enableProfileTimeline) {
-        $('#timeline-profiling').removeClass('d-none');
-    }
-
-    $(remoteMessage).empty();
-    localMessage.value = '';
-    toggleDataChannelElements();
-
-    printFormValues(formValues);
-
-    startViewer(localView, remoteView, formValues, onStatsReport, remoteMessage);
 });
 
 function updateViewerUI() {
