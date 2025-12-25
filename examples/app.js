@@ -93,6 +93,7 @@ function getTabScopedClientID() {
 }
 
 function getFormValues() {
+    // 从UI获取的参数（保持原有逻辑）
     const region = $('#region').val();
     const channelName = $('#channelName').val();
     const clientId = $('#clientId').val() || getTabScopedClientID();
