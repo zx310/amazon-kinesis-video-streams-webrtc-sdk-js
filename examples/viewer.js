@@ -543,7 +543,7 @@ async function startViewer(localView, remoteView, formValues, onStatsReport, rem
         };
         const configuration = {
             iceServers,
-            iceTransportPolicy: formValues.forceTURN ? 'relay' : 'all',
+            iceTransportPolicy: 'all',
         };
         viewer.peerConnection = new RTCPeerConnection(configuration);
 
