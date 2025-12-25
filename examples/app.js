@@ -96,7 +96,7 @@ function getFormValues() {
     const endpointInput = $('#endpoint').val();
     const endpoint = endpointInput?.trim() || undefined;
 
-    return {
+    const formValues = {
         region: $('#region').val(),
         channelName: $('#channelName').val(),
         clientId: $('#clientId').val() || getTabScopedClientID(),
@@ -140,6 +140,10 @@ function getFormValues() {
         turnsWithTcp: $('#turns-with-tcp').is(':checked'),
         oneTurnServerSetOnly: $('#turn-one-set-only').is(':checked'),
     };
+    
+    console.log('Form Values:', formValues);
+    
+    return formValues;
 }
 
 function toggleDataChannelElements() {
