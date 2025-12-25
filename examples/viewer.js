@@ -538,8 +538,8 @@ async function startViewer(localView, remoteView, formValues, onStatsReport, rem
               }
             : { width: { ideal: 640 }, height: { ideal: 480 } };
         const constraints = {
-            video: formValues.sendVideo ? resolution : false,
-            audio: formValues.sendAudio,
+            video: false,
+            audio: false,
         };
         const configuration = {
             iceServers,
